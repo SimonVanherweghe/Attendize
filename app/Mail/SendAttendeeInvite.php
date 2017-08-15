@@ -33,7 +33,7 @@ class SendAttendeeInvite extends Mailable
         $file_name = $this->attendee->getReferenceAttribute();
         $file_path = public_path(config('attendize.event_pdf_tickets_path')) . '/' . $file_name . '.pdf';
 
-        return $this->subject('Your ticket for the event ' . $this->attendee->order->event->title)
+        return $this->subject(trans('emails.subjects.attendeeInvite') . $this->attendee->order->event->title)
           ->attach($file_path)
           ->view('Mailers.TicketMailer.SendAttendeeInvite');
     }
