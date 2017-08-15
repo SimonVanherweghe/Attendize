@@ -6,7 +6,7 @@
     "type": "project",
     "homepage" : "https://www.attendize.com",
     "require": {
-        "laravel/framework": "5.2.*",
+        "laravel/framework": "5.3.*",
         "laravelcollective/html": "~5.0",
         "milon/barcode": "dev-master",
         "iron-io/iron_mq": "2.*",
@@ -29,8 +29,7 @@
         "predis/predis": "~1.0",
         "guzzlehttp/guzzle": "^6.2",
         "omnipay/migs": "^2.1",
-        "barryvdh/laravel-debugbar": "^2.3",
-        "barryvdh/laravel-ide-helper": "^2.3",
+        "barryvdh/laravel-debugbar": "^2.4",
         "omnipay/mollie": "~3.0",
         "jenssegers/date": "^3.2"
     },
@@ -38,9 +37,10 @@
         "phpunit/phpunit": "~4.0",
         "phpspec/phpspec": "~2.1",
         "fzaninotto/faker": "^1.5",
-        "symfony/dom-crawler": "~3.0",
-        "symfony/css-selector": "~3.0",
-        "doctrine/dbal": "~2.3"
+        "symfony/dom-crawler": "~3.1",
+        "symfony/css-selector": "~3.1",
+        "doctrine/dbal": "~2.3",
+        "barryvdh/laravel-ide-helper": "^2.1"
     },
 
     "autoload": {
