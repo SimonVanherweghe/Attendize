@@ -103,6 +103,15 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'order_first_name' => [
+            'required' => 'Gelieve een voornaam in te vullen',
+        ],
+        'order_last_name' => [
+            'required' => 'Gelieve een naam in te vullen',
+        ],
+        'order_email' => [
+            'email' => 'Gelieve een correct e-mailadres in te vullen',
+        ]
     ],
 
     /*

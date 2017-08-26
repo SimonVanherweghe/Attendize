@@ -65,7 +65,7 @@ class EventCheckoutController extends Controller
         if (!$request->has('tickets')) {
             return response()->json([
                 'status'  => 'error',
-                'message' => 'No tickets selected',
+                'message' => trans('event.tickets.notickets'),
             ]);
         }
 
@@ -113,8 +113,8 @@ class EventCheckoutController extends Controller
             ];
 
             $quantity_available_validation_messages = [
-                'ticket_' . $ticket_id . '.max' => 'The maximum number of tickets you can register is ' . $ticket_quantity_remaining,
-                'ticket_' . $ticket_id . '.min' => 'You must select at least ' . $ticket->min_per_person . ' tickets.',
+                'ticket_' . $ticket_id . '.max' => trans('event.tickets.maxamount',['amount'=>$ticket_quantity_remaining]) ,
+                'ticket_' . $ticket_id . '.min' => trans('event.tickets.minamount',['amount'=>$ticket->min_per_person]),
             ];
 
             $validator = Validator::make(['ticket_' . $ticket_id => (int)$request->get('ticket_' . $ticket_id)],
@@ -159,10 +159,10 @@ class EventCheckoutController extends Controller
                 $validation_rules['ticket_holder_last_name.' . $i . '.' . $ticket_id] = ['required'];
                 $validation_rules['ticket_holder_email.' . $i . '.' . $ticket_id] = ['required', 'email'];
 
-                $validation_messages['ticket_holder_first_name.' . $i . '.' . $ticket_id . '.required'] = 'Ticket holder ' . ($i + 1) . '\'s first name is required';
-                $validation_messages['ticket_holder_last_name.' . $i . '.' . $ticket_id . '.required'] = 'Ticket holder ' . ($i + 1) . '\'s last name is required';
-                $validation_messages['ticket_holder_email.' . $i . '.' . $ticket_id . '.required'] = 'Ticket holder ' . ($i + 1) . '\'s email is required';
-                $validation_messages['ticket_holder_email.' . $i . '.' . $ticket_id . '.email'] = 'Ticket holder ' . ($i + 1) . '\'s email appears to be invalid';
+                $validation_messages['ticket_holder_first_name.' . $i . '.' . $ticket_id . '.required'] = trans('event.createOrder.holdervalidation.firstname', ["number"=> $i + 1]);
+                $validation_messages['ticket_holder_last_name.' . $i . '.' . $ticket_id . '.required'] = trans('event.createOrder.holdervalidation.lastname', ["number"=> $i + 1]);
+                $validation_messages['ticket_holder_email.' . $i . '.' . $ticket_id . '.required'] = trans('event.createOrder.holdervalidation.emailreq', ["number"=> $i + 1]);
+                $validation_messages['ticket_holder_email.' . $i . '.' . $ticket_id . '.email'] = trans('event.createOrder.holdervalidation.emailinvalid', ["number"=> $i + 1]);
 
                 /*
                  * Validation rules for custom questions
@@ -183,7 +183,7 @@ class EventCheckoutController extends Controller
         if (empty($tickets)) {
             return response()->json([
                 'status'  => 'error',
-                'message' => 'No tickets selected.',
+                'message' => trans('event.tickets.notickets'),
             ]);
         }
 
@@ -277,7 +277,7 @@ class EventCheckoutController extends Controller
         if (!session()->get('ticket_order_' . $event_id)) {
             return response()->json([
                 'status'      => 'error',
-                'message'     => 'Your session has expired.',
+                'message'     => trans('event.createOrder.sessionexp'),
                 'redirectUrl' => route('showEventPage', [
                     'event_id' => $event_id,
                 ])

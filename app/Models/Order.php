@@ -26,11 +26,7 @@ class Order extends MyBaseModel
      *
      * @var array $messages
      */
-    public $messages = [
-        'order_first_name.required' => 'Please enter a valid first name',
-        'order_last_name.required'  => 'Please enter a valid last name',
-        'order_email.email'         => 'Please enter a valid email',
-    ];
+    public $messages = [];
 
     /**
      * The items associated with the order.

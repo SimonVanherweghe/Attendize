@@ -2,7 +2,10 @@
 return [
     'tickets' => [
         'offline' => 'Ook mogelijk om offline te belaten',
-        'register' => 'Inschrijven'
+        'register' => 'Inschrijven',
+        'notickets'=> 'Gelieve een aantal tickets te kiezen',
+        'maxamount'=> 'Je kan maximum nog :amount tickets selecteren.' ,
+        'minamount'=> 'Je moet minimum :amount tickets kiezen.'
     ],
     'header' => [
         'presents' => 'presenteert',
@@ -30,10 +33,17 @@ return [
         'copydetails' => 'Kopieer persoongegevens naar alle tickets voor de deelnemers',
         'holders_title'=> 'Tickets deelnemers',
         'ticketholder' => 'Deelnemer :number',
+        'holdervalidation' => [
+            'firstname'=>'De voornaam van deelnemer :number is verplicht',
+            'lastname'=>'De naam van deelnemer :number is verplicht',
+            'emailreq'=>'E-mailadres voor deelnemer :number is verplicht',
+            'emailinvalid'=>'E-mailadres voor deelnemer :number ziet er niet correct uit',
+        ],
         'payment_title' => 'Betalingsgegevens',
         'offline'=> 'Betaal achteraf',
         'instructions' => 'Instructies',
-        'checkout'=> 'Afrekenen'
+        'checkout'=> 'Afrekenen',
+        'sessionexp' => 'De sessie is verlopen.'
     ],
     'viewOrder' => [
         'title' => 'Bedankt voor jouw bestelling!',

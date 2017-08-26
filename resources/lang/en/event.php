@@ -2,7 +2,10 @@
 return [
     'tickets' => [
         'offline' => 'Offline Payment Methods Available',
-        'register' => 'Register'
+        'register' => 'Register',
+        'notickets'=> 'No tickets selected',
+        'maxamount'=> 'The maximum number of tickets you can register is :amount' ,
+        'minamount'=> 'You must select at least :amount tickets.'
     ],
     'header' => [
         'presents' => 'Presents',
@@ -30,10 +33,17 @@ return [
         'copydetails' => 'Copy buyer details to all ticket holders.',
         'holders_title'=> 'Ticket Holder Information',
         'ticketholder' => 'Ticket Holder :number Details',
+        'holdervalidation' => [
+            'firstname'=>'Ticket holder :number\'s first name is required',
+            'lastname'=>'Ticket holder :number\'s last name is required',
+            'emailreq'=>'Ticket holder :number\'s email is required',
+            'emailinvalid'=>'Ticket holder :number\'s email appears to be invalid',
+        ],
         'payment_title' => 'Payment Information',
         'offline'=> 'Pay using offline method',
         'instructions' => 'Offline Payment Instructions',
-        'checkout'=> 'Checkout'
+        'checkout'=> 'Checkout',
+        'sessionexp' => 'Your session has expired.'
     ],
     'viewOrder' => [
         'title' => 'Thank you for your order!',
