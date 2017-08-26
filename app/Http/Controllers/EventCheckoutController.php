@@ -502,14 +502,6 @@ class EventCheckoutController extends Controller
 
         $response = $transaction->send();
 
-        Log::info(print_r($response->getData(), true));
-
-        Log::info("Open:" . $response->isOpen());
-        Log::info("Paid:" . $response->isPaid());
-        Log::info("Success:" . $response->isSuccessful());
-
-
-
         if ($response->isSuccessful()) {
             session()->push('ticket_order_' . $event_id . '.transaction_id', $response->getTransactionReference());
             return $this->completeOrder($event_id, false);
