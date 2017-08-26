@@ -12,7 +12,7 @@
                     <div class="col-lg-12 panel">
                         <!-- panel body -->
                         <div class="panel-body text-right">
-                            <h4 class="semibold nm">{{{$order->first_name.' '.$order->last_name}}}</h4>
+                            <h4 class="semibold nm">{{$order->first_name.' '.$order->last_name}}</h4>
                             <p class="text-muted nm">17th June 2014</p>
                         </div>
                         <!-- panel body -->
