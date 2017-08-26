@@ -128,6 +128,11 @@ Route::group(['prefix' => 'e'], function () {
         'as'   => 'postCreateOrder',
         'uses' => 'EventCheckoutController@postCreateOrder',
     ]);
+
+    Route::post('{event_id}/webhook', [
+        'as'   => 'postWebhook',
+        'uses' => 'EventCheckoutController@postWebhook',
+    ]);
 });
 
 /*
