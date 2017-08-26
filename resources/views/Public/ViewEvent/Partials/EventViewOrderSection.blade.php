@@ -7,7 +7,6 @@
         text-align: center;
         margin: 0;
         margin-bottom: 30px;
-        letter-spacing: .2em;
         font-weight: 200;
     }
 
