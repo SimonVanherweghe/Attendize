@@ -43,7 +43,11 @@ return [
         'date'=> 'Date',
         'payment' => [
             'title' => 'Payment Instructions',
-            'info' => 'This order is awaiting payment. Please read the below instructions on how to make payment.'
+            'info' => 'This order is awaiting payment. Please read the below instructions on how to make payment.',
+            'bankName' =>'Name',
+            'bankAccount' =>'Account',
+            'bankBic' =>'BIC',
+            'transferReference' =>'Reference'
         ],
         'items'=> [
             'title' => 'Order Items',

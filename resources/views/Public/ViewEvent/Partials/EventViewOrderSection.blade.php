@@ -96,6 +96,16 @@
                     </div>
                     <div class="offline_payment_instructions well">
                         {!! Markdown::parse($event->offline_payment_instructions) !!}
+                        <dl>
+                            <dt>{{trans('event.viewOrder.payment.bankAccount')}}</dt>
+                            <dd>{{json_decode($order->notes)->bankAccount}}</dd>
+                            <dt>{{trans('event.viewOrder.payment.transferReference')}}</dt>
+                            <dd>{{json_decode($order->notes)->transferReference}}</dd>
+                            <dt>{{trans('event.viewOrder.payment.bankName')}}</dt>
+                            <dd>{{json_decode($order->notes)->bankName}}</dd>
+                            <dt>{{trans('event.viewOrder.payment.bankBic')}}</dt>
+                            <dd>{{json_decode($order->notes)->bankBic}}</dd>
+                        </dl>
                     </div>
 
                 @endif

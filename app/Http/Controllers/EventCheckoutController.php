@@ -475,7 +475,7 @@ class EventCheckoutController extends Controller
         if ($request->get('is_payment_cancelled') == '1') {
             session()->flash('message', 'You cancelled your payment. You may try again.');
             return response()->redirectToRoute('showEventCheckout', [
-                'event_id'             => $event_id,
+                'event_id' => $event_id,
                 'is_payment_cancelled' => 1,
             ]);
         }
@@ -488,12 +488,10 @@ class EventCheckoutController extends Controller
             ]);
 
 
-
         // set Api Key again
         if (App::environment('local', 'staging')) {
             $apiKey = AccountPaymentGateway::where('payment_gateway_id', 5)->get()->pluck('config', 'id')->first()['TestApiKey'];
-        }
-        else if(App::environment('production')) {
+        } else if (App::environment('production')) {
             $apiKey = AccountPaymentGateway::where('payment_gateway_id', 5)->get()->pluck('config', 'id')->first()['LiveApiKey'];
         }
 
@@ -504,11 +502,23 @@ class EventCheckoutController extends Controller
 
         $response = $transaction->send();
 
+        Log::info(print_r($response->getData(), true));
+
+        Log::info("Open:" . $response->isOpen());
+        Log::info("Paid:" . $response->isPaid());
+        Log::info("Success:" . $response->isSuccessful());
+
+
 
         if ($response->isSuccessful()) {
             session()->push('ticket_order_' . $event_id . '.transaction_id', $response->getTransactionReference());
             return $this->completeOrder($event_id, false);
-        } else {
+        }elseif ($response->isOpen()){
+            session()->push('ticket_order_' . $event_id . '.transaction_id', $response->getTransactionReference());
+            session()->push('ticket_order_' . $event_id . '.transaction_status', $response->getStatus());
+            session()->push('ticket_order_' . $event_id . '.transaction_details', $response->getData()["details"]);
+            return $this->completeOrder($event_id, false);
+        }else {
 
             session()->flash('message', $response->getMessage());
             return response()->redirectToRoute('showEventCheckout', [
@@ -540,6 +550,12 @@ class EventCheckoutController extends Controller
             $attendee_increment = 1;
             $ticket_questions = isset($request_data['ticket_holder_questions']) ? $request_data['ticket_holder_questions'] : [];
 
+            $pay_offline = isset($request_data['pay_offline']);
+            if(isset($ticket_order["transaction_status"])){
+                if($ticket_order["transaction_status"][0]=="open"){
+                    $pay_offline=true;
+                }
+            }
 
             /*
              * Create the order
@@ -547,20 +563,23 @@ class EventCheckoutController extends Controller
             if (isset($ticket_order['transaction_id'])) {
                 $order->transaction_id = $ticket_order['transaction_id'][0];
             }
-            if ($ticket_order['order_requires_payment'] && !isset($request_data['pay_offline'])) {
+            if ($ticket_order['order_requires_payment'] && !$pay_offline) {
                 $order->payment_gateway_id = $ticket_order['payment_gateway']->id;
             }
             $order->first_name = $request_data['order_first_name'];
             $order->last_name = $request_data['order_last_name'];
             $order->email = $request_data['order_email'];
-            $order->order_status_id = isset($request_data['pay_offline']) ? config('attendize.order_awaiting_payment') : config('attendize.order_complete');
+            $order->order_status_id = $pay_offline ? config('attendize.order_awaiting_payment') : config('attendize.order_complete');
             $order->amount = $ticket_order['order_total'];
             $order->booking_fee = $ticket_order['booking_fee'];
             $order->organiser_booking_fee = $ticket_order['organiser_booking_fee'];
             $order->discount = 0.00;
             $order->account_id = $event->account->id;
             $order->event_id = $ticket_order['event_id'];
-            $order->is_payment_received = isset($request_data['pay_offline']) ? 0 : 1;
+            if(isset($ticket_order['transaction_details'])){
+                $order->notes= json_encode($ticket_order['transaction_details'][0]);
+            }
+            $order->is_payment_received = $pay_offline ? 0 : 1;
             $order->save();
 
             /*

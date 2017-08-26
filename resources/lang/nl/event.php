@@ -43,7 +43,11 @@ return [
         'date'=> 'Datum',
         'payment' => [
             'title' => 'Betalingsinstructies',
-            'info' => 'Deze bestelling is nog niet betaald, zie onderstaande instructies om dit in orde te brengen.'
+            'info' => 'Deze bestelling is nog niet betaald, zie onderstaande instructies om dit in orde te brengen.',
+            'bankName' =>'Naam rekeninghouder',
+            'bankAccount' =>'Rekeningnummer',
+            'bankBic' =>'BIC',
+            'transferReference' =>'Gestructureerde mededeling'
         ],
         'items'=> [
             'title' => 'Details bestelling',
