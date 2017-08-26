@@ -375,10 +375,9 @@ class EventCheckoutController extends Controller
                         break;
                     case config('attendize.payment_gateway_mollie'):
                         $transaction_data += [
-                            'transactionId' => $event_id . date('YmdHis'),       // TODO: Where to generate transaction id?
+                            'transactionId' => $event_id . "-".date('YmdHis')."-".$request->get('order_email'),       // TODO: Where to generate transaction id?
                             'returnUrl' => route('showEventCheckoutPaymentReturn', [
-                                'event_id'              => $event_id,
-                                'is_payment_successful' => 1
+                                'event_id'              => $event_id
                             ]),
                         ];
 
@@ -404,8 +403,9 @@ class EventCheckoutController extends Controller
 
                 $response = $transaction->send();
 
-                if ($response->isSuccessful()) {
+                $transaction_data["transactionReference"] = $response->getData()["id"];
 
+                if ($response->isSuccessful()) {
                     session()->push('ticket_order_' . $event_id . '.transaction_id',
                         $response->getTransactionReference());
 
@@ -462,7 +462,6 @@ class EventCheckoutController extends Controller
 
     }
 
-
     /**
      * Attempt to complete a user's payment when they return from
      * an off-site gateway
@@ -489,8 +488,6 @@ class EventCheckoutController extends Controller
             ]);
 
 
-        $transaction_data = $ticket_order['transaction_data'][0];
-        $transaction_data['transactionReference'] = $transaction_data['transactionId'];
 
         // set Api Key again
         if (App::environment('local', 'staging')) {
@@ -503,12 +500,12 @@ class EventCheckoutController extends Controller
         $gateway->setApiKey($apiKey);
 
         // add payment ID to $transaction_data
-
-        $transaction = $gateway->completePurchase($transaction_data);
+        $transaction = $gateway->completePurchase($ticket_order['transaction_data'][0]);
 
         $response = $transaction->send();
 
-        if ($response->getCode() == null) { // if null there are no errors
+
+        if ($response->isSuccessful()) {
             session()->push('ticket_order_' . $event_id . '.transaction_id', $response->getTransactionReference());
             return $this->completeOrder($event_id, false);
         } else {
@@ -519,18 +516,6 @@ class EventCheckoutController extends Controller
                 'is_payment_failed' => 1,
             ]);
         }
-
-        /*if ($response->isSuccessful()) {
-            session()->push('ticket_order_' . $event_id . '.transaction_id', $response->getTransactionReference());
-            return $this->completeOrder($event_id, false);
-        } else {
-
-            session()->flash('message', $response->getMessage());
-            return response()->redirectToRoute('showEventCheckout', [
-                'event_id'          => $event_id,
-                'is_payment_failed' => 1,
-            ]);
-        }*/
 
     }
 

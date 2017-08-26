@@ -24,7 +24,7 @@
         "guzzlehttp/guzzle": "^6.2",
         "omnipay/migs": "^2.1",
         "barryvdh/laravel-debugbar": "^2.4",
-        "omnipay/mollie": "~3.0",
+        "omnipay/mollie": "~3.1",
         "jenssegers/date": "^3.2"
     },
     "require-dev": {
