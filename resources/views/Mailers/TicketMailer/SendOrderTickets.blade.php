@@ -5,7 +5,7 @@
 
 {!! trans('emails.ordersucccess', ['eventtitle'=> $order->event->title ]) !!}<br><br>
 
-{{trans('emails.attachment')}} {{trans('emails.view_order_info')}}: {{route('showOrderDetails', ['order_reference' => $order->order_reference])}}
+{{trans('emails.attachment')}} {!! trans('emails.view_order_info', ['link'=> route('showOrderDetails', ['order_reference' => $order->order_reference])]) !!}
 
 @if(!$order->is_payment_received)
 <br><br>
@@ -17,7 +17,7 @@
 {{trans('emails.orderdetails.name')}}: <b>{{$order->full_name}}</b><br>
 {{trans('emails.orderdetails.date')}}: <b>{{$order->created_at->toDayDateTimeString()}}</b><br>
 {{trans('emails.orderdetails.email')}}: <b>{{$order->email}}</b><br>
-<a href="{!! route('downloadCalendarIcs', ['event_id' => $order->event->id]) !!}">Add To Calendar</a>
+<a href="{!! route('downloadCalendarIcs', ['event_id' => $order->event->id]) !!}">{{trans('emails.orderdetails.calendar')}}</a>
 <h3>{{trans('emails.orderitems.title')}}</h3>
 <div style="padding:10px; background: #F9F9F9; border: 1px solid #f1f1f1;">
     <table style="width:100%; margin:10px;">

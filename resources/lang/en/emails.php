@@ -22,7 +22,7 @@ return [
     'tickety_url' => 'Tickety.com',
     'hi' => 'Hi',
     'attachment' => 'We\'ve attached your tickets to this email.',
-    'view_order_info' => 'You can view your order info and download your tickets at',
+    'view_order_info' => 'You can view your order info and download your tickets at <a href=":link">this link</a>',
     'anytime' => 'anytime',
     'order_reference' => 'Your order reference is',
     'thank_you_register' => 'Thank you for registering for',

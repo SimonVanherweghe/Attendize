@@ -19,7 +19,7 @@ return [
 
     'ordersucccess' => 'Jouw bestelling voor <b>:eventtitle</b> is geslaagd.',
     'attachment' => 'De tickets kan je vinden in bijlage.',
-    'view_order_info' => 'Je kan ook jouw bestelling bekijken en tickets afdrukken via',
+    'view_order_info' => 'Je kan ook jouw bestelling bekijken en tickets afdrukken via <a href=":link">deze link</a>',
     'requires_payment' => 'Opgelet: deze bestelling moet nog betaald worden. Instructies hoe je kan betalen, kan je hier vinden:',
 
     'orderdetails' => [
