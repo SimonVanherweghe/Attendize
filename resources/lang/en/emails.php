@@ -43,17 +43,22 @@ return [
     ],
     'orderitems' => [
         'title' => 'Order Details',
-        'ticket'=>'Ticket',
-        'qty'=>'Qty.',
-        'price'=>'Price',
-        'fee'=>'Fee',
-        'total'=>'Total',
-        'subtotal'=>'Sub Total'
+        'ticket' => 'Ticket',
+        'qty' => 'Qty.',
+        'price' => 'Price',
+        'fee' => 'Fee',
+        'total' => 'Total',
+        'subtotal' => 'Sub Total'
     ],
 
     'subjects' => [
-        'attendee'=> 'Your ticket for the event ',
-         'attendeeInvite'=> 'Your ticket for the event ',
-        'orderTickets'=> 'Your tickets for the event '
+        'attendee' => 'Your ticket for the event ',
+        'attendeeInvite' => 'Your ticket for the event ',
+        'orderTickets' => 'Your tickets for the event '
+    ],
+
+    'message' => [
+        'intro' => 'You have received a message from <b>:name</b> in relation to the event <b>:event</b>.',
+        'contact' => 'You can contact <b>:sender</b> directly at <a href=\':mail\'>:mail</a>, or by replying to this email.'
     ]
 ];

@@ -31,17 +31,22 @@ return [
         'calendar' => 'Toevoegen aan agenda'
     ],
     'orderitems' => [
-        'ticket'=>'Ticket',
-        'qty'=>'Aantal',
-        'price'=>'Prijs',
-        'fee'=>'Kost',
-        'total'=>'Totaal',
-        'subtotal'=>'Subtotaal'
+        'ticket' => 'Ticket',
+        'qty' => 'Aantal',
+        'price' => 'Prijs',
+        'fee' => 'Kost',
+        'total' => 'Totaal',
+        'subtotal' => 'Subtotaal'
     ],
 
     'subjects' => [
-        'attendee'=> 'Jouw ticket voor ',
-        'attendeeInvite'=> 'Jouw ticket voor ',
-        'orderTickets'=> 'Jouw tickets voor '
+        'attendee' => 'Jouw ticket voor ',
+        'attendeeInvite' => 'Jouw ticket voor ',
+        'orderTickets' => 'Jouw tickets voor '
+    ],
+
+    'message' => [
+        'intro' => 'Je hebt een bericht gekregen van <b>:name</b> in verband met <b>:event</b>.',
+        'contact' => 'Je kan <b>:sender</b> contacteren via <a href=\':mail\'>:mail</a>, of door te antwoorden op deze mail.'
     ]
 ];
