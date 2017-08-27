@@ -28,6 +28,7 @@ class OrderMailer
 
         $data = [
             'order' => $order,
+            'email_logo' => $order->event->organiser->full_logo_path
         ];
 
         Mail::send('Mailers.TicketMailer.SendOrderTickets', $data, function ($message) use ($order) {
