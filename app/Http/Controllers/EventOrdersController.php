@@ -48,6 +48,7 @@ class EventOrdersController extends MyBaseController
             $orders = $event->orders()
                 ->where(function ($query) use ($searchQuery) {
                     $query->where('order_reference', 'like', $searchQuery . '%')
+                        ->orWhere('transaction_id', 'like', $searchQuery . '%')
                         ->orWhere('first_name', 'like', $searchQuery . '%')
                         ->orWhere('email', 'like', $searchQuery . '%')
                         ->orWhere('last_name', 'like', $searchQuery . '%');
