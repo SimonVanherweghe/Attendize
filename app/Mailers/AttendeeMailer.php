@@ -21,6 +21,7 @@ class AttendeeMailer extends Mailer
 
         $data = [
             'attendee' => $attendee,
+            'email_logo'  => $attendee->event->organiser->full_logo_path,
         ];
 
         Mail::send('Mailers.TicketMailer.SendAttendeeTicket', $data, function ($message) use ($attendee) {
