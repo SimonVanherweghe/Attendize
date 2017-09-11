@@ -65,8 +65,20 @@ class AttendeeMailer extends Mailer
 
         Log::info("Sending invite to: " . $attendee->email);
 
-        Mail::to($attendee->email)
-          ->queue(new SendAttendeeInvite($attendee));
+        $data = [
+            'attendee' => $attendee,
+            'email_logo'  => $attendee->event->organiser->full_logo_path,
+        ];
+
+        Mail::send('Mailers.TicketMailer.SendAttendeeInvite', $data, function ($message) use ($attendee) {
+            $message->to($attendee->email);
+            $message->subject(trans('emails.subjects.attendee')  . $attendee->order->event->title);
+
+            $file_name = $attendee->reference;
+            $file_path = public_path(config('attendize.event_pdf_tickets_path')) . '/' . $file_name . '.pdf';
+
+            $message->attach($file_path);
+        });
     }
 
 
