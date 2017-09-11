@@ -474,6 +474,8 @@ class EventCheckoutController extends Controller
      */
     public function showEventCheckoutPaymentReturn(Request $request, $event_id)
     {
+        Log::info("request: " . print_r($request->get('is_payment_cancelled'),true));
+        Log::info("ticket_order_: " . print_r(session()->get('ticket_order_' . $event_id),true));
         if ($request->get('is_payment_cancelled') == '1') {
             session()->flash('message', 'You cancelled your payment. You may try again.');
             return response()->redirectToRoute('showEventCheckout', [
@@ -483,38 +485,47 @@ class EventCheckoutController extends Controller
         }
 
         $ticket_order = session()->get('ticket_order_' . $event_id);
-        $gateway = Omnipay::create($ticket_order['payment_gateway']->name);
+        if($ticket_order['payment_gateway']) {
+            $gateway = Omnipay::create($ticket_order['payment_gateway']->name);
 
-        $gateway->initialize($ticket_order['account_payment_gateway']->config + [
-                'testMode' => config('attendize.enable_test_payments'),
-            ]);
+            $gateway->initialize($ticket_order['account_payment_gateway']->config + [
+                    'testMode' => config('attendize.enable_test_payments'),
+                ]);
 
 
-        // set Api Key again
-        if (App::environment('local', 'staging')) {
-            $apiKey = AccountPaymentGateway::where('payment_gateway_id', 5)->get()->pluck('config', 'id')->first()['TestApiKey'];
-        } else if (App::environment('production')) {
-            $apiKey = AccountPaymentGateway::where('payment_gateway_id', 5)->get()->pluck('config', 'id')->first()['LiveApiKey'];
-        }
+            // set Api Key again
+            if (App::environment('local', 'staging')) {
+                $apiKey = AccountPaymentGateway::where('payment_gateway_id', 5)->get()->pluck('config', 'id')->first()['TestApiKey'];
+            } else if (App::environment('production')) {
+                $apiKey = AccountPaymentGateway::where('payment_gateway_id', 5)->get()->pluck('config', 'id')->first()['LiveApiKey'];
+            }
 
-        $gateway->setApiKey($apiKey);
+            $gateway->setApiKey($apiKey);
 
-        // add payment ID to $transaction_data
-        $transaction = $gateway->completePurchase($ticket_order['transaction_data'][0]);
+            // add payment ID to $transaction_data
+            $transaction = $gateway->completePurchase($ticket_order['transaction_data'][0]);
 
-        $response = $transaction->send();
+            $response = $transaction->send();
 
-        if ($response->isSuccessful()) {
-            session()->push('ticket_order_' . $event_id . '.transaction_id', $response->getTransactionReference());
-            return $this->completeOrder($event_id, false);
-        } elseif ($response->isOpen()) {
-            session()->push('ticket_order_' . $event_id . '.transaction_id', $response->getTransactionReference());
-            session()->push('ticket_order_' . $event_id . '.transaction_status', $response->getStatus());
-            session()->push('ticket_order_' . $event_id . '.transaction_details', $response->getData()["details"]);
-            return $this->completeOrder($event_id, false);
-        } else {
+            if ($response->isSuccessful()) {
+                session()->push('ticket_order_' . $event_id . '.transaction_id', $response->getTransactionReference());
+                return $this->completeOrder($event_id, false);
+            } elseif ($response->isOpen()) {
+                session()->push('ticket_order_' . $event_id . '.transaction_id', $response->getTransactionReference());
+                session()->push('ticket_order_' . $event_id . '.transaction_status', $response->getStatus());
+                session()->push('ticket_order_' . $event_id . '.transaction_details', $response->getData()["details"]);
+                return $this->completeOrder($event_id, false);
+            } else {
 
-            session()->flash('message', $response->getMessage());
+                session()->flash('message', $response->getMessage());
+                return response()->redirectToRoute('showEventCheckout', [
+                    'event_id' => $event_id,
+                    'is_payment_failed' => 1,
+                ]);
+            }
+        }else{
+            Log::info("Geen payment_gateway session" . print_r($ticket_order,true));
+            session()->flash('message', "Er ging iets mis");
             return response()->redirectToRoute('showEventCheckout', [
                 'event_id' => $event_id,
                 'is_payment_failed' => 1,
