@@ -16,6 +16,7 @@ return [
     'hello' => 'Hallo',
     'reset_password' => 'Om je paswoord te resetten, vul dit formulier in',
     'thank_you' => 'Bedankt',
+    'regards' => 'Groeten',
 
     'ordersucccess' => 'Jouw bestelling voor <b>:eventtitle</b> is geslaagd.',
     'attachment' => 'De tickets kan je vinden in bijlage.',
@@ -48,5 +49,8 @@ return [
     'message' => [
         'intro' => 'Je hebt een bericht gekregen van <b>:name</b> in verband met <b>:event</b>.',
         'contact' => 'Je kan <b>:sender</b> contacteren via <a href=\':mail\'>:mail</a>, of door te antwoorden op deze mail.'
-    ]
+    ],
+
+    'invited' => 'Je bent ingeschreven voor <b>:event</b>.<br/>Jouw ticket kan je vinden in bijlage.',
+    'resend' => 'Jouw ticket voor <b>:event</b> kan je vinden in bijlage.'
 ];

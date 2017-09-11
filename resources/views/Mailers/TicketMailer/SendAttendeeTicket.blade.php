@@ -1,10 +1,9 @@
 @extends('Emails.Layouts.Master')
 
 @section('message_content')
-Hello {{$attendee->first_name}},<br><br>
+    {{trans('emails.hello')}}  {{$attendee->first_name}},<br><br>
 
-Your ticket for the event <b>{{$attendee->order->event->title}}</b> is attached to this email.
-
+    {!! trans('emails.resend',['event'=>$attendee->order->event->title]) !!}
 <br><br>
-Thank you
+    {{trans('emails.regards')}}
 @stop

@@ -16,6 +16,7 @@ return [
     'hello' => 'Hello',
     'reset_password' => 'To reset your password, complete this form',
     'thank_you' => 'Thank you',
+    'regards' => 'Regards',
     'team_tickety' => 'Attendize',
     'tickety_email' => 'Attendize',
     'powered_by' => 'Powered By',
@@ -60,5 +61,9 @@ return [
     'message' => [
         'intro' => 'You have received a message from <b>:name</b> in relation to the event <b>:event</b>.',
         'contact' => 'You can contact <b>:sender</b> directly at <a href=\':mail\'>:mail</a>, or by replying to this email.'
-    ]
+    ],
+
+    'invited' => 'You have been invited to the event  <b>:event</b>.<br/>Your ticket for the event is attached to this email.',
+    'resend' => 'Your ticket for the event <b>:event</b> is attached to this email.
+'
 ];
