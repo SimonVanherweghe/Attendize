@@ -631,7 +631,7 @@ Route::group(['middleware' => ['auth', 'first.run']], function () {
          * Check In App
          * -------
          */
-        Route::get('{event_id}/check_in', [
+        Route::get('{event_id}/check_in/{q?}', [
             'as'   => 'showChechIn',
             'uses' => 'EventCheckInController@showCheckIn',
         ]);

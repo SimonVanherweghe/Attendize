@@ -12,6 +12,7 @@ var checkinApp = new Vue({
         canvasElement: $('canvas#QrCanvas')[0],
         scannerDataUrl: '',
         QrTimeout: null,
+        redirectTimeout:null,
         canvasContext: $('canvas#QrCanvas')[0].getContext('2d'),
         successBeep: new Audio('/mp3/beep.mp3'),
         scanResult: false,
@@ -20,6 +21,7 @@ var checkinApp = new Vue({
     },
 
     created: function () {
+        this.searchTerm = Attendize.searchTerm;
         this.fetchAttendees()
     },
 
@@ -37,7 +39,7 @@ var checkinApp = new Vue({
         },
         toggleCheckin: function (attendee) {
 
-            if(this.workingAway) {
+            if (this.workingAway) {
                 return;
             }
             this.workingAway = true;
@@ -71,7 +73,7 @@ var checkinApp = new Vue({
         /* QR Scanner Methods */
 
         QrCheckin: function (attendeeReferenceCode) {
-
+            var that = this;
             this.isScanning = false;
 
             this.$http.post(Attendize.qrcodeCheckInRoute, {attendee_reference: attendeeReferenceCode}).then(function (res) {
@@ -79,14 +81,25 @@ var checkinApp = new Vue({
                 this.scanResult = true;
                 this.scanResultMessage = res.data.message;
                 this.scanResultType = res.data.status;
+                console.log(  res.data  );
+                if (this.scanResultType === 'success') {
+                    this.redirectTimeout = setTimeout(function () {
+                        that.showFilteredAttendees(res.data.attendee_reference);
+                    }, 3000);
+                }
 
             }, function (response) {
                 this.scanResultMessage = 'Something went wrong! Refresh the page and try again';
             });
         },
 
-        QrCheckOrderIn : function (route){
+        showFilteredAttendees: function (q) {
+            window.location.href = Attendize.showCheckIn + "/" + q;
+        },
+
+        QrCheckOrderIn: function (route) {
             console.log("order checkin");
+            clearTimeout(this.redirectTimeout);
             this.isScanning = false;
             this.$http.post(route).then(function (res) {
                 this.successBeep.play();
@@ -173,6 +186,7 @@ var checkinApp = new Vue({
             }
         },
         closeScanner: function () {
+            clearTimeout(this.redirectTimeout);
             clearTimeout(this.QrTimeout);
             this.showScannerModal = false;
             track = this.stream.getTracks()[0];

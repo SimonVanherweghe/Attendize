@@ -17,20 +17,22 @@ class EventCheckInController extends MyBaseController
      * @param $event_id
      * @return \Illuminate\View\View
      */
-    public function showCheckIn($event_id)
+    public function showCheckIn($event_id, $q = '')
     {
 
         $event = Event::scope()->findOrFail($event_id);
 
         $data = [
-            'event'     => $event,
+            'event' => $event,
             'attendees' => $event->attendees
         ];
 
         JavaScript::put([
+            'searchTerm' => $q,
             'qrcodeCheckInRoute' => route('postQRCodeCheckInAttendee', ['event_id' => $event->id]),
             'checkInRoute'       => route('postCheckInAttendee', ['event_id' => $event->id]),
-            'checkInSearchRoute' => route('postCheckInSearch', ['event_id' => $event->id])
+            'checkInSearchRoute' => route('postCheckInSearch', ['event_id' => $event->id]),
+            'showCheckIn' => route('showChechIn', ['event_id' => $event->id])
         ]);
 
         return view('ManageEvent.CheckIn', $data);
@@ -41,18 +43,9 @@ class EventCheckInController extends MyBaseController
         return view('ManageEvent.Modals.QrcodeCheckIn');
     }
 
-    /**
-     * Search attendees
-     *
-     * @param Request $request
-     * @param $event_id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function postCheckInSearch(Request $request, $event_id)
+    private function searchForAttendees($event_id, $searchQuery)
     {
-        $searchQuery = $request->get('q');
-
-        $attendees = Attendee::scope()->withoutCancelled()
+        return Attendee::scope()->withoutCancelled()
             ->join('tickets', 'tickets.id', '=', 'attendees.ticket_id')
             ->join('orders', 'orders.id', '=', 'attendees.order_id')
             ->where(function ($query) use ($event_id) {
@@ -80,6 +73,21 @@ class EventCheckInController extends MyBaseController
             ->orderBy('attendees.first_name', 'ASC')
             ->get();
 
+    }
+
+    /**
+     * Search attendees
+     *
+     * @param Request $request
+     * @param $event_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function postCheckInSearch(Request $request, $event_id)
+    {
+        $searchQuery = $request->get('q');
+
+        $attendees = $this->searchForAttendees($event_id, $searchQuery);
+
         return response()->json($attendees);
     }
 
@@ -101,10 +109,10 @@ class EventCheckInController extends MyBaseController
          */
         if ((($checking == 'in') && ($attendee->has_arrived == 1)) || (($checking == 'out') && ($attendee->has_arrived == 0))) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Attendee Already Checked ' . (($checking == 'in') ? 'In (at ' . $attendee->arrival_time->format('H:i A, F j') . ')' : 'Out') . '!',
                 'checked' => $checking,
-                'id'      => $attendee->id,
+                'id' => $attendee->id,
             ]);
         }
 
@@ -113,10 +121,10 @@ class EventCheckInController extends MyBaseController
         $attendee->save();
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'checked' => $checking,
             'message' => 'Attendee Successfully Checked ' . (($checking == 'in') ? 'In' : 'Out'),
-            'id'      => $attendee->id,
+            'id' => $attendee->id
         ]);
     }
 
@@ -152,14 +160,14 @@ class EventCheckInController extends MyBaseController
 
         if (is_null($attendee)) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => "Invalid Ticket! Please try again."
             ]);
         }
 
         $relatedAttendesCount = Attendee::where('id', '!=', $attendee->id)
             ->where([
-                'order_id'    => $attendee->order_id,
+                'order_id' => $attendee->order_id,
                 'has_arrived' => false
             ])->count();
 
@@ -169,14 +177,14 @@ class EventCheckInController extends MyBaseController
             /*
              * @todo Incorporate this feature into the new design
              */
-            $appendedText = '<br><br><button class="btn btn-primary btn-sm" type="button" onclick=\'checkinApp.QrCheckOrderIn("'.$confirmOrderTicketsRoute.'")\'><i class="ico-ticket"></i> Check in all tickets associated to this order</button>';
+            $appendedText = '<br><br><button class="btn btn-primary btn-sm" type="button" onclick=\'checkinApp.QrCheckOrderIn("' . $confirmOrderTicketsRoute . '")\'><i class="ico-ticket"></i> Check in all tickets associated to this order</button>';
         } else {
             $appendedText = '';
         }
 
         if ($attendee->has_arrived) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Attendee already checked in at ' . $attendee->arrival_time->format('H:i A, F j') . $appendedText
             ]);
         }
@@ -184,8 +192,9 @@ class EventCheckInController extends MyBaseController
         Attendee::find($attendee->id)->update(['has_arrived' => true, 'arrival_time' => Carbon::now()]);
 
         return response()->json([
-            'status'  => 'success',
-            'message' => 'Success !<br>Name: ' . $attendee->first_name . ' ' . $attendee->last_name . '<br>Reference: ' . $attendee->reference . '<br>Ticket: ' . $attendee->ticket . '.' . $appendedText
+            'status' => 'success',
+            'message' => 'Success !<br>Name: ' . $attendee->first_name . ' ' . $attendee->last_name . '<br>Reference: ' . $attendee->reference . '<br>Ticket: ' . $attendee->ticket . '.' . $appendedText,
+            'attendee_reference' => $attendee->order->order_reference,
         ]);
     }
 
@@ -199,17 +208,17 @@ class EventCheckInController extends MyBaseController
     public function confirmOrderTicketsQr($event_id, $order_id)
     {
         $updateRowsCount = Attendee::scope()->where([
-            'event_id'    => $event_id,
-            'order_id'    => $order_id,
+            'event_id' => $event_id,
+            'order_id' => $order_id,
             'has_arrived' => 0,
         ])->update([
-            'has_arrived'  => 1,
+            'has_arrived' => 1,
             'arrival_time' => Carbon::now(),
         ]);
 
         return response()->json([
-            'status'  => 'success',
-            'message' => 'Success !<br/>'.$updateRowsCount . ' Attendee(s) Checked in.'
+            'status' => 'success',
+            'message' => 'Success !<br/>' . $updateRowsCount . ' Attendee(s) Checked in.'
         ]);
     }
 
