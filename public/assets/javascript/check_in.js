@@ -85,6 +85,20 @@ var checkinApp = new Vue({
             });
         },
 
+        QrCheckOrderIn : function (route){
+            console.log("order checkin");
+            this.isScanning = false;
+            this.$http.post(route).then(function (res) {
+                this.successBeep.play();
+                this.scanResult = true;
+                this.scanResultMessage = res.data.message;
+                this.scanResultType = res.data.status;
+
+            }, function (response) {
+                this.scanResultMessage = 'Something went wrong! Refresh the page and try again';
+            });
+        },
+
         showQrModal: function () {
             this.showScannerModal = true;
             this.initScanner();
